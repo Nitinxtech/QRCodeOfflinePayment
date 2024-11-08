@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transaction History</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Transaction History</h1>
+    <ul>
+      <% transactions.forEach(transaction => { %>
+        <li>
+          Transaction: <%= transaction.data %> | Synced: <%= transaction.synced %> | Date: <%= transaction.createdAt.toDateString() %>
+        </li>
+      <% }) %>
+    </ul>
+    <a href="/">Go Home</a>
+  </div>
+</body>
+</html>

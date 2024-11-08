@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+    <video id="preview" width="100%"></video>
+
+<script>
+  const scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+  scanner.addListener('scan', function (content) {
+    alert('Scanned QR Code Content: ' + content);
+    window.location.href = '/transaction/process?data=' + encodeURIComponent(content);
+  });
+
+  Instascan.Camera.getCameras().then(function (cameras) {
+    if (cameras.length > 0) {
+      scanner.start(cameras[0]);
+    } else {
+      console.error('No cameras found.');
+    }
+  }).catch(function (e) {
+    console.error(e);
+  });
+</script>
+
+<script>
+    async function syncTransactions() {
+      try {
+        const response = await fetch('/transaction/sync', { method: 'POST' });
+        const result = await response.json();
+        if (result.message === 'Synced successfully') {
+          alert('Transactions synced successfully!');
+        }
+      } catch (error) {
+        console.error('Sync error:', error);
+      }
+    }
+  
+    // Sync when internet is detected
+    window.addEventListener('online', syncTransactions);
+  </script>
+  
+
+
+  <meta charset="UTF-8">
+  <title>QR Code Payment - Home</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>QR Code Payment System</h1>
+    <form action="/transaction/generate" method="POST">
+      <input type="text" name="data" placeholder="Enter transaction details" required>
+      <button type="submit">Generate QR Code</button>
+    </form>
+    <a href="/history">View Transaction History</a>
+  </div>
+</body>
+</html>
